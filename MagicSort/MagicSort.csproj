@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <Authors>microwavePC</Authors>
+    <Description>A wide-use sorting library for .NET Core.</Description>
+    <Copyright>Copyright 2020 microwavePC</Copyright>
+    <Version>1.0.0</Version>
+  </PropertyGroup>
+
+</Project>
