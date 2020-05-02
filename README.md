@@ -28,8 +28,8 @@ You can sort several List by specifying property as string.
 
 ## How to use
 
-1. Install "MagicSort" NuGet package.
-2. On your source, add using statement.
+1. Install ["MagicSort" NuGet package.](https://www.nuget.org/packages/MagicSort) into your .NET Core project.
+2. On your source code, add using statement below.
 ```csharp
 using MagicSort;
 ```
