@@ -37,9 +37,7 @@ https://github.com/microwavePC/MagicSort/blob/master/README.md</Description>
     <PackageTags></PackageTags>
     <NeutralLanguage></NeutralLanguage>
     <Copyright>Copyright 2020 microwavePC</Copyright>
-    <PackageReleaseNotes>
-      https://github.com/microwavePC/MagicSort
-    </PackageReleaseNotes>
+    <PackageReleaseNotes>https://github.com/microwavePC/MagicSort#release-notes</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/microwavePC/MagicSort</PackageProjectUrl>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageIcon>MagicSort.png</PackageIcon>
