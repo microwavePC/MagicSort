@@ -9,29 +9,60 @@ You can sort several List by specifying property as string.
 
 ## Methods
 
-* void **MagicSorter.Sort\<T\>(ref List\<T\> targetList, string sortKey, SortType sortType = SortType.Asc)**<br>
-    This is a sort method for single sort key.<br>
-  * **List\<T\> targetList**<br>
-    Sorting target list.
-  * **string sortKey**<br>
-    Sort key string.<br>
-    When you want to sort by deep-hierarchy property, please write this item using "." as delimiter.<br>
-    e.g.) "SomeClass.SomeInnerClass.SomePropertyName"
-  * **SortType sortType**<br>
-    Sort type (SortType.Asc or SortType.Desc).
+### Linq-like style methods
 
-* void **MagicSorter.Sort\<T\>(ref List\<T\> targetList, List<Tuple<string, SortType>> sortKeySortTypePairs)**
-    This is a sort method for multiple sort keys.<br>
-  * **List\<T\> targetList**<br>
-    Sorting target list.
-  * **List<Tuple<string, SortType>> sortKeySortTypePairs**<br>
-    Sort key string and sort type pairs.<br>
-    When you want to sort by deep-hierarchy property, please write sort key using "." as delimiter.<br>
+```csharp
+IOrderedEnumerable<T> OrderBy<T>(this List<T> targetList, string sortKey, SortType sortType = SortType.Asc)
+```
+This is a sort method for single sort key.<br>
+* **List\<T\> targetList**<br>
+  Sorting target list.
+* **string sortKey**<br>
+  Sort key string.<br>
+  When you want to sort by deep-hierarchy property, please write this item using "." as delimiter.<br>
+  e.g.) "SomeClass.SomeInnerClass.SomePropertyName"
+* **SortType sortType**<br>
+  Sort type (SortType.Asc or SortType.Desc).
+
+```csharp
+IOrderedEnumerable<T> OrderBy<T>(this List<T> targetList, Dictionary<string, SortType> sortKeySortTypePairs)
+```
+This is a sort method for multiple sort keys.<br>
+* **List\<T\> targetList**<br>
+  Sorting target list.
+* **Dictionary<string, SortType> sortKeySortTypePairs**<br>
+  Sort key string and sort type pairs.<br>
+  When you want to sort by deep-hierarchy property, please write sort key using "." as delimiter.<br>
+<br>
+### Static methods on MagicSorter class (Method-like style)
+
+```csharp
+void MagicSorter.Sort<T>(ref List<T> targetList, string sortKey, SortType sortType = SortType.Asc)
+```
+This is a sort method for single sort key.<br>
+* **List\<T\> targetList**<br>
+  Sorting target list.
+* **string sortKey**<br>
+  Sort key string.<br>
+  When you want to sort by deep-hierarchy property, please write this item using "." as delimiter.<br>
+  e.g.) "SomeClass.SomeInnerClass.SomePropertyName"
+* **SortType sortType**<br>
+  Sort type (SortType.Asc or SortType.Desc).
+
+```csharp
+void MagicSorter.Sort<T>(ref List<T> targetList, Dictionary<string, SortType> sortKeySortTypePairs)
+```
+This is a sort method for multiple sort keys.<br>
+* **List\<T\> targetList**<br>
+  Sorting target list.
+* **Dictionary<string, SortType> sortKeySortTypePairs**<br>
+  Sort key string and sort type pairs.<br>
+  When you want to sort by deep-hierarchy property, please write sort key using "." as delimiter.<br>
 
 ## How to use
 
 1. Install ["MagicSort" NuGet package](https://www.nuget.org/packages/MagicSort) into your .NET Core project.
-2. On your source code, add using statement below.
+2. Add using-statement below into your source code.<br>
 ```csharp
 using MagicSort;
 ```
@@ -72,6 +103,10 @@ var targetList = new List<SomeClass>
     },
 };
 
+//========================================
+// HOW TO USE METHOD-LIKE STYLE METHODS
+//========================================
+
 // Ascending sort by property "Prop1".
 MagicSorter.Sort(ref list, "Prop1", SortType.Asc);
 
@@ -79,17 +114,47 @@ MagicSorter.Sort(ref list, "Prop1", SortType.Asc);
 MagicSorter.Sort(ref list, "Prop4.InnerProp3.DeepProp1", SortType.Desc);
 
 // Sorting like
-// "order by Prop2 asc, Prop4.InnerProp2 desc".
-var sortKeySortTypePairs = new List<Tuple<string, SortType>>
+// "ORDER BY Prop2 ASC, Prop4.InnerProp2 DESC".
+var sortKeySortTypePairs = new Dictionary<string, SortType>
 {
-    Tuple.Create("Prop2", SortType.Asc),
-    Tuple.Create("Prop4.InnerProp2", SortType.Desc),
+    { "Prop2", SortType.Asc },
+    { "Prop4.InnerProp2", SortType.Desc },
 };
 MagicSorter.Sort(ref list, sortKeySortTypePairs);
+
+//========================================
+// HOW TO USE LINQ-LIKE STYLE METHODS
+//========================================
+
+var sortedList = new List<SomeClass>();
+
+// Ascending sort by property "Prop1".
+sortedList = list
+    .OrderBy("Prop1", SortType.Asc)
+    .ToList();
+
+// Descending sort by deep property "Prop4.InnerProp3.DeepProp1".
+sortedList = list
+    .OrderBy("Prop4.InnerProp3.DeepProp1", SortType.Desc)
+    .ToList();
+
+// Sorting like
+// "ORDER BY Prop2 ASC, Prop4.InnerProp2 DESC".
+sortedList = list
+    .OrderBy(new Dictionary<string, SortType>
+    {
+        { "Prop2", SortType.Asc },
+        { "Prop4.InnerProp2", SortType.Desc },
+    })
+    .ToList();
 ```
 <br>
 
 # Release Notes
+
+### Version 1.2.0 (2020/05/04)
+
+Added Linq-like methods.<br>
 
 ### Version 1.1.0 (2020/05/03)
 
