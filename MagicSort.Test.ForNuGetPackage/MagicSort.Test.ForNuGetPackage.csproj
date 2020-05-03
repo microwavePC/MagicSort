@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>
+      netstandard2.0;
+      netstandard2.1;
+      net45;
+      net451;
+      net452;
+      net46;
+      net461;
+      net462;
+      net47;
+      net471;
+      net472;
+      net48;
+      netcoreapp2.0;
+      netcoreapp2.1;
+      netcoreapp2.2;
+      netcoreapp3.0;
+      netcoreapp3.1;
+    </TargetFrameworks>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MagicSort" Version="1.2.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
+    <PackageReference Include="xunit" Version="2.4.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
+    <PackageReference Include="coverlet.collector" Version="1.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="DummyClasses\" />
+  </ItemGroup>
+
+</Project>
