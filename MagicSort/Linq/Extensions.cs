@@ -1,27 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Reflection;
+using MagicSort;
 
-namespace MagicSort
+namespace System.Linq
 {
     /// <summary>
-    /// Static class for sorting several "List" instances.
+    /// Static class for sorting several "List" instances by Linq-like style.
     /// </summary>
-    public static class MagicSorter
+    public static class Extensions
     {
         private const char dot = '.';
         private const string sortTargetPropertyNotExistExceptionMessageTemplate = "Sort key \"{0}\" does not exist in class {1}.";
 
         /// <summary>
-        /// Sort method for single sort key.
+        /// Sorts the elements of a sequence in any SortType's order according to a key.
         /// </summary>
         /// <typeparam name="T">Type of target list class.</typeparam>
         /// <param name="targetList">Target list to sort.</param>
         /// <param name="sortKey">Sort key.</param>
         /// <param name="sortType">Sort type (Asc or Desc).</param>
         /// <exception cref="SortTargetPropertyNotExistException">This exception is triggered when the sort key does not exists in the type T.</exception>
-        public static void Sort<T>(ref List<T> targetList, string sortKey, SortType sortType = SortType.Asc)
+        /// <returns>IOrderedEnumerable object.</returns>
+        public static IOrderedEnumerable<T> OrderBy<T>(this List<T> targetList, string sortKey, SortType sortType = SortType.Asc)
             where T : class
         {
             if (!HasProperty<T>(sortKey))
@@ -31,30 +31,31 @@ namespace MagicSort
             }
 
             Func<T, object> orderFunc = AssembleOrderFunc<T>(sortKey);
+            IOrderedEnumerable<T> orderedEnumerable = null;
 
             switch (sortType)
             {
                 case SortType.Asc:
-                    targetList = targetList
-                        .OrderBy(orderFunc)
-                        .ToList();
+                    orderedEnumerable = targetList
+                        .OrderBy(orderFunc);
                     break;
                 case SortType.Desc:
-                    targetList = targetList
-                        .OrderByDescending(orderFunc)
-                        .ToList();
+                    orderedEnumerable = targetList
+                        .OrderByDescending(orderFunc);
                     break;
             }
+
+            return orderedEnumerable;
         }
 
         /// <summary>
-        /// Sort method for multiple sort keys.
+        /// Sorts the elements of a sequence in any SortType's order according to multiple keys.
         /// </summary>
         /// <typeparam name="T">Type of target list class.</typeparam>
         /// <param name="targetList">Target list to sort.</param>
         /// <param name="sortKeySortTypePairs">Pair of sort key and sort type (Asc or Desc).</param>
         /// <exception cref="SortTargetPropertyNotExistException">This exception is triggered when the sort key does not exists in the type T.</exception>
-        public static void Sort<T>(ref List<T> targetList, Dictionary<string, SortType> sortKeySortTypePairs)
+        public static IOrderedEnumerable<T> OrderBy<T>(this List<T> targetList, Dictionary<string, SortType> sortKeySortTypePairs)
             where T : class
         {
             IOrderedEnumerable<T> orderedTarget = null;
@@ -100,7 +101,7 @@ namespace MagicSort
                 }
             }
 
-            targetList = orderedTarget.ToList();
+            return orderedTarget;
         }
 
         #region PRIVATE METHODS

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace MagicSort.Test.DummyClasses
+﻿namespace MagicSort.Test.DummyClasses
 {
     public class DummyClass4
     {
