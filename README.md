@@ -3,7 +3,9 @@ A wide-use dynamically multiple sorting library for .NET Core.<br>
 You can sort several List by specifying property as string.
 
 ## Supported platforms
-.NET Core (version: equal or larger than 2.0.0)
+* .NET Core 2.0~
+* .NET Framework 4.5~
+* .NET Standard 2.0~
 
 ## Methods
 
@@ -85,3 +87,13 @@ var sortKeySortTypePairs = new List<Tuple<string, SortType>>
 };
 MagicSorter.Sort(ref list, sortKeySortTypePairs);
 ```
+<br>
+
+# Release Notes
+
+### Version 1.1.0 (2020/05/03)
+
+Supported new frameworks and versions below.<br>
+* .NET Core 2.0~
+* .NET Framework 4.5~
+* .NET Standard 2.0~

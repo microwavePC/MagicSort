@@ -1,24 +1,48 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFrameworks>
+      netstandard2.0;
+      netstandard2.1;
+      net45;
+      net451;
+      net452;
+      net46;
+      net461;
+      net462;
+      net47;
+      net471;
+      net472;
+      net48;
+      netcoreapp2.0;
+      netcoreapp2.1;
+      netcoreapp2.2;
+      netcoreapp3.0;
+      netcoreapp3.1;
+    </TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <Authors>microwavePC</Authors>
+    <PackageId>MagicSort</PackageId>
     <Description>A wide-use sorting library for .NET Core.
 You can sort several List by specifying property as string.
 
 [HOW TO USE]
 Please view README below.
 https://github.com/microwavePC/MagicSort/blob/master/README.md</Description>
-    <Copyright>Copyright 2020 microwavePC</Copyright>
-    <Version>1.0.0</Version>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <PackageProjectUrl>https://github.com/microwavePC/MagicSort</PackageProjectUrl>
-    <PackageIcon>MagicSort.png</PackageIcon>
+    <Version>1.1.0</Version>
+    <Authors>microwavePC</Authors>
+    <Company></Company>
     <RepositoryUrl>https://github.com/microwavePC/MagicSort</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
-    <Company>no company.</Company>
+    <PackageTags></PackageTags>
+    <NeutralLanguage></NeutralLanguage>
+    <Copyright>Copyright 2020 microwavePC</Copyright>
+    <PackageReleaseNotes>
+      https://github.com/microwavePC/MagicSort
+    </PackageReleaseNotes>
+    <PackageProjectUrl>https://github.com/microwavePC/MagicSort</PackageProjectUrl>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageIcon>MagicSort.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
