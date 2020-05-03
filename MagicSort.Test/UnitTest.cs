@@ -1,5 +1,4 @@
 using MagicSort.Test.DummyClasses;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -9,15 +8,61 @@ namespace MagicSort.Test
 {
     public class UnitTest
     {
-        [Theory(DisplayName ="Unit test for single sort")]
+        [Theory(DisplayName = "Unit test for method style MagicSort (single key sort)")]
         [MemberData(nameof(TestParamsForSingleSort))]
-        public void TestForSingleSort(
+        public void TestForMethodStyleSingleSort(
             List<DummyClass1> list,
             string sortKey,
             SortType sortType)
         {
             MagicSorter.Sort(ref list, sortKey, sortType);
+            JudgeLists(list, sortKey, sortType);
+        }
 
+
+        [Theory(DisplayName = "Unit test for Linq style MagicSort (single key sort)")]
+        [MemberData(nameof(TestParamsForSingleSort))]
+        public void TestForLinqStyleSingleSort(
+            List<DummyClass1> list,
+            string sortKey,
+            SortType sortType)
+        {
+            var sortedList = list
+                .OrderBy(sortKey, sortType)
+                .ToList();
+
+            JudgeLists(sortedList, sortKey, sortType);
+        }
+
+
+        [Theory(DisplayName = "Unit test for method style MagicSort (multiple key sort)")]
+        [MemberData(nameof(TestParamsForMultiSort))]
+        public void TestForMethodStyleMultiSort(
+            List<DummyClass1> list,
+            Dictionary<string, SortType> sortKeySortTypePairs)
+        {
+            MagicSorter.Sort(ref list, sortKeySortTypePairs);
+            JudgeLists(list, sortKeySortTypePairs);
+        }
+
+
+        [Theory(DisplayName = "Unit test for Linq style MagicSort (multiple key sort)")]
+        [MemberData(nameof(TestParamsForMultiSort))]
+        public void TestForLinqStyleMultiSort(
+            List<DummyClass1> list,
+            Dictionary<string, SortType> sortKeySortTypePairs)
+        {
+            var sortedList = list
+                .OrderBy(sortKeySortTypePairs)
+                .ToList();
+
+            JudgeLists(sortedList, sortKeySortTypePairs);
+        }
+
+
+        private void JudgeLists<T>(List<T> list, string sortKey, SortType sortType)
+            where T : class
+        {
             for (int i = 1; i < list.Count; i++)
             {
                 object itemBefore = GetTargetValue(list[i - 1], sortKey);
@@ -28,19 +73,14 @@ namespace MagicSort.Test
         }
 
 
-        [Theory(DisplayName = "Unit test for multi sort")]
-        [MemberData(nameof(TestParamsForMultiSort))]
-        public void TestForMultiSort(
-            List<DummyClass1> list,
-            List<Tuple<string, SortType>> sortKeySortTypePairs)
+        private void JudgeLists<T>(List<T> list, Dictionary<string, SortType> sortKeySortTypePairs)
+            where T : class
         {
-            MagicSorter.Sort(ref list, sortKeySortTypePairs);
-
             for (int i = 1; i < list.Count; i++)
             {
                 int lookingDepthNo = 0;
-                string sortKey = sortKeySortTypePairs[lookingDepthNo].Item1;
-                SortType sortType = sortKeySortTypePairs[lookingDepthNo].Item2;
+                string sortKey = sortKeySortTypePairs.ElementAt(lookingDepthNo).Key;
+                SortType sortType = sortKeySortTypePairs.ElementAt(lookingDepthNo).Value;
 
                 object itemBefore = GetTargetValue(list[i - 1], sortKey);
                 object itemAfter = GetTargetValue(list[i], sortKey);
@@ -54,8 +94,8 @@ namespace MagicSort.Test
                         break;
                     }
 
-                    sortKey = sortKeySortTypePairs[lookingDepthNo].Item1;
-                    sortType = sortKeySortTypePairs[lookingDepthNo].Item2;
+                    sortKey = sortKeySortTypePairs.ElementAt(lookingDepthNo).Key;
+                    sortType = sortKeySortTypePairs.ElementAt(lookingDepthNo).Value;
 
                     itemBefore = GetTargetValue(list[i - 1], sortKey);
                     itemAfter = GetTargetValue(list[i], sortKey);
@@ -364,23 +404,23 @@ namespace MagicSort.Test
             new object[]
             {
                 TestData.DummyClass1List,
-                new List<Tuple<string, SortType>>
+                new Dictionary<string, SortType>
                 {
-                    Tuple.Create("Property1", SortType.Asc),
-                    Tuple.Create("Property4.PropertyW.PropertyA", SortType.Desc),
-                    Tuple.Create("Property4.PropertyZ", SortType.Desc),
+                    { "Property1", SortType.Asc },
+                    { "Property4.PropertyW.PropertyA", SortType.Desc },
+                    { "Property4.PropertyZ", SortType.Desc },
                 }
             },
             new object[]
             {
                 TestData.DummyClass1List,
-                new List<Tuple<string, SortType>>
+                new Dictionary<string, SortType>
                 {
-                    Tuple.Create("Property4.PropertyW.PropertyD.PropertyK.Property4.PropertyW.PropertyD.PropertyI", SortType.Desc),
-                    Tuple.Create("Property1", SortType.Asc),
-                    Tuple.Create("Property4.PropertyW.PropertyA", SortType.Desc),
-                    Tuple.Create("Property2", SortType.Asc),
-                    Tuple.Create("Property4.PropertyW.PropertyD.PropertyJ", SortType.Asc),
+                    { "Property4.PropertyW.PropertyD.PropertyK.Property4.PropertyW.PropertyD.PropertyI", SortType.Desc },
+                    { "Property1", SortType.Asc},
+                    { "Property4.PropertyW.PropertyA", SortType.Desc},
+                    { "Property2", SortType.Asc},
+                    { "Property4.PropertyW.PropertyD.PropertyJ", SortType.Asc },
                 }
             },
         };

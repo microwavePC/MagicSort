@@ -6,11 +6,12 @@ using System.Reflection;
 namespace MagicSort
 {
     /// <summary>
-    /// This is a generic class to sort several "List" instances.
+    /// Static class for sorting several "List" instances.
     /// </summary>
     public static class MagicSorter
     {
         private const char dot = '.';
+        private const string sortTargetPropertyNotExistExceptionMessageTemplate = "Sort key \"{0}\" does not exist in class {1}.";
 
         /// <summary>
         /// Sort method for single sort key.
@@ -19,14 +20,14 @@ namespace MagicSort
         /// <param name="targetList">Target list to sort.</param>
         /// <param name="sortKey">Sort key.</param>
         /// <param name="sortType">Sort type (Asc or Desc).</param>
-        /// <exception cref="SortTargetPropertyNotExistException"></exception>
+        /// <exception cref="SortTargetPropertyNotExistException">This exception is triggered when the sort key does not exists in the type T.</exception>
         public static void Sort<T>(ref List<T> targetList, string sortKey, SortType sortType = SortType.Asc)
             where T : class
         {
             if (!HasProperty<T>(sortKey))
             {
                 throw new SortTargetPropertyNotExistException(
-                    $"Sort key \"{sortKey}\" does not exist in class {typeof(T).Name}.");
+                    string.Format(sortTargetPropertyNotExistExceptionMessageTemplate, sortKey, typeof(T).Name));
             }
 
             Func<T, object> orderFunc = AssembleOrderFunc<T>(sortKey);
@@ -52,22 +53,22 @@ namespace MagicSort
         /// <typeparam name="T">Type of target list class.</typeparam>
         /// <param name="targetList">Target list to sort.</param>
         /// <param name="sortKeySortTypePairs">Pair of sort key and sort type (Asc or Desc).</param>
-        /// <exception cref="SortTargetPropertyNotExistException"></exception>
-        public static void Sort<T>(ref List<T> targetList, List<Tuple<string, SortType>> sortKeySortTypePairs)
+        /// <exception cref="SortTargetPropertyNotExistException">This exception is triggered when the sort key does not exists in the type T.</exception>
+        public static void Sort<T>(ref List<T> targetList, Dictionary<string, SortType> sortKeySortTypePairs)
             where T : class
         {
             IOrderedEnumerable<T> orderedTarget = null;
 
             bool isFirstSort = true;
-            foreach (Tuple<string, SortType> sortKeySortTypePair in sortKeySortTypePairs)
+            foreach (KeyValuePair<string, SortType> sortKeySortTypePair in sortKeySortTypePairs)
             {
-                string sortKey = sortKeySortTypePair.Item1;
-                SortType sortType = sortKeySortTypePair.Item2;
+                string sortKey = sortKeySortTypePair.Key;
+                SortType sortType = sortKeySortTypePair.Value;
 
                 if (!HasProperty<T>(sortKey))
                 {
                     throw new SortTargetPropertyNotExistException(
-                        $"Sort key \"{sortKey}\" does not exist in class {typeof(T).Name}.");
+                        string.Format(sortTargetPropertyNotExistExceptionMessageTemplate, sortKey, typeof(T).Name));
                 }
 
                 Func<T, object> orderFunc = AssembleOrderFunc<T>(sortKey);
@@ -101,6 +102,100 @@ namespace MagicSort
 
             targetList = orderedTarget.ToList();
         }
+
+        /// <summary>
+        /// Sort method for single sort key.
+        /// </summary>
+        /// <typeparam name="T">Type of target list class.</typeparam>
+        /// <param name="targetList">Target list to sort.</param>
+        /// <param name="sortKey">Sort key.</param>
+        /// <param name="sortType">Sort type (Asc or Desc).</param>
+        /// <exception cref="SortTargetPropertyNotExistException">This exception is triggered when the sort key does not exists in the type T.</exception>
+        /// <returns>IOrderedEnumerable object.</returns>
+        public static IOrderedEnumerable<T> OrderBy<T>(this List<T> targetList, string sortKey, SortType sortType = SortType.Asc)
+            where T : class
+        {
+            if (!HasProperty<T>(sortKey))
+            {
+                throw new SortTargetPropertyNotExistException(
+                    string.Format(sortTargetPropertyNotExistExceptionMessageTemplate, sortKey, typeof(T).Name));
+            }
+
+            Func<T, object> orderFunc = AssembleOrderFunc<T>(sortKey);
+            IOrderedEnumerable<T> orderedEnumerable = null;
+
+            switch (sortType)
+            {
+                case SortType.Asc:
+                    orderedEnumerable = targetList
+                        .OrderBy(orderFunc);
+                    break;
+                case SortType.Desc:
+                    orderedEnumerable = targetList
+                        .OrderByDescending(orderFunc);
+                    break;
+            }
+
+            return orderedEnumerable;
+        }
+
+        /// <summary>
+        /// Sort method for multiple sort keys.
+        /// </summary>
+        /// <typeparam name="T">Type of target list class.</typeparam>
+        /// <param name="targetList">Target list to sort.</param>
+        /// <param name="sortKeySortTypePairs">Pair of sort key and sort type (Asc or Desc).</param>
+        /// <exception cref="SortTargetPropertyNotExistException">This exception is triggered when the sort key does not exists in the type T.</exception>
+        public static IOrderedEnumerable<T> OrderBy<T>(this List<T> targetList, Dictionary<string, SortType> sortKeySortTypePairs)
+            where T : class
+        {
+            IOrderedEnumerable<T> orderedTarget = null;
+
+            bool isFirstSort = true;
+            foreach (KeyValuePair<string, SortType> sortKeySortTypePair in sortKeySortTypePairs)
+            {
+                string sortKey = sortKeySortTypePair.Key;
+                SortType sortType = sortKeySortTypePair.Value;
+
+                if (!HasProperty<T>(sortKey))
+                {
+                    throw new SortTargetPropertyNotExistException(
+                        string.Format(sortTargetPropertyNotExistExceptionMessageTemplate, sortKey, typeof(T).Name));
+                }
+
+                Func<T, object> orderFunc = AssembleOrderFunc<T>(sortKey);
+
+                if (isFirstSort)
+                {
+                    isFirstSort = false;
+                    switch (sortType)
+                    {
+                        case SortType.Asc:
+                            orderedTarget = targetList.OrderBy(orderFunc);
+                            break;
+                        case SortType.Desc:
+                            orderedTarget = targetList.OrderByDescending(orderFunc);
+                            break;
+                    }
+                }
+                else
+                {
+                    switch (sortType)
+                    {
+                        case SortType.Asc:
+                            orderedTarget = orderedTarget.ThenBy(orderFunc);
+                            break;
+                        case SortType.Desc:
+                            orderedTarget = orderedTarget.ThenByDescending(orderFunc);
+                            break;
+                    }
+                }
+            }
+
+            return orderedTarget;
+        }
+
+        #region PRIVATE METHODS
 
         /// <summary>
         /// Judges the existence of property that aimed by sort key.
@@ -158,5 +253,7 @@ namespace MagicSort
 
             return orderFunc;
         }
+
+        #endregion
     }
 }
