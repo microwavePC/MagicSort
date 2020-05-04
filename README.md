@@ -33,7 +33,7 @@ This is a sort method for multiple sort keys.<br>
 * **Dictionary<string, SortType> sortKeySortTypePairs**<br>
   Sort key string and sort type pairs.<br>
   When you want to sort by deep-hierarchy property, please write sort key using "." as delimiter.<br>
-<br>
+
 ### Static methods on MagicSorter class (Method-like style)
 
 ```csharp
